@@ -162,7 +162,6 @@ if (btnPlayCpu) {
 
 if (btnCreateGame) {
   btnCreateGame.addEventListener("click", () => {
-    console.log("👉 CLICK EN CREAR PARTIDA");
     socket.emit("crear-partida", "HUMAN");
   });
 }
