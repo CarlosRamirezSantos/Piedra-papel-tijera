@@ -1,5 +1,3 @@
-import { io } from "socket.io-client";
-
 const authScreen = document.getElementById("auth-screen");
 const lobbyScreen = document.getElementById("lobby-screen");
 const gameScreen = document.getElementById("game-screen");
@@ -28,7 +26,7 @@ let currentGameId = null;
 
 const API_URL = "http://localhost:8090/api/auth";
 
-// Login y register
+// login y register
 btnLogin.addEventListener("click", async () => {
   const username = usernameInput.value;
   const password = passwordInput.value;
@@ -97,7 +95,7 @@ function connectSocket() {
     showMessage("Error de autenticación en socket", "error");
   });
 
-  // Para escruchar eventosss
+  // Eventos
   // Recibe lista de partidas
   socket.on("lista-partidas", (partidas) => {
     renderGamesList(partidas);
@@ -111,33 +109,51 @@ function connectSocket() {
   // El creador recibe la confirmación de partida creada
   socket.on("partida-creada", (partida) => {
     currentGameId = partida.id;
-    alert(`Partida #${partida.id} creada. Esperando oponente...`);
+    
+    if (partida.type === 'HUMAN') {
+        alert(`Partida #${partida.id} creada. Esperando oponente...`);
+    }
   });
 
   // Ambos jugadores reciben el inicio de partida
   socket.on("inicio-partida", (partida) => {
     currentGameId = partida.id;
     showGameUI();
-    if (roundMessage) roundMessage.textContent = "¡La partida ha comenzado!";
+  
+    if (partida.type === 'CPU') {
+        if (roundMessage) roundMessage.textContent = "¡Juegas contra la Máquina! Elige tu jugada.";
+    } else {
+        if (roundMessage) roundMessage.textContent = "¡Oponente conectado! La partida ha comenzado.";
+    }
+    
     updateScores(0, 0);
   });
 
+  // Recibe el resultado de cada ronda
   socket.on("resultado-ronda", (data) => {
     updateScores(data.p1Score, data.p2Score);
 
-    let texto = `Ronda terminada.<br>Ganador ronda: <b>${data.ganadorRonda}</b>`;
+    // Muestra las jugadas y el ganador de la ronda
+    let texto = `
+        Ronda terminada.
+        <b>P1</b> jugó: ${data.p1Move} | <b>P2</b> jugó: ${data.p2Move}
+        <br>Ganador ronda: <b>${data.ganadorRonda}</b>
+    `;
 
     if (roundMessage) roundMessage.innerHTML = texto;
   });
 
-  // Reciben el fin de la partida
+  // Recibe fin de la partida
   socket.on("fin-partida", (data) => {
-    alert(`PARTIDA TERMINADA. Ganador ID: ${data.ganadorId}`);
+
+    if (data.ganadorId) {
+        alert(`PARTIDA TERMINADA. Ganador ID: ${data.ganadorId}`);
+    }
     showLobby();
   });
 }
 
-// PAra crear partida
+// Para crear partida
 if (btnPlayCpu) {
   btnPlayCpu.addEventListener("click", () => {
     socket.emit("crear-partida", "CPU");
@@ -194,10 +210,6 @@ if (btnAbandon) {
       if (socket && currentGameId) {
         socket.emit("abandonar-partida", currentGameId);
       }
-
-      currentGameId = null;
-
-      showLobby();
     }
   });
 }
@@ -233,8 +245,4 @@ function renderRanking(users) {
 function updateScores(s1, s2) {
   if (p1ScoreEl) p1ScoreEl.textContent = s1;
   if (p2ScoreEl) p2ScoreEl.textContent = s2;
-}
-
-function obtenerMiJugada(data) {
-  return "Tu selección";
 }

@@ -47,7 +47,7 @@ export const socketController = async (socket, io) => {
     }
   };
 
-  // para actualizar estadísticas
+  // Para actualizar estadísticas
   const actualizarStats = async (userId, esGanador) => {
     if (!userId) return;
     try {
@@ -98,6 +98,10 @@ export const socketController = async (socket, io) => {
     try {
       const partida = await Game.findByPk(gameId);
       if (!partida || partida.status !== "WAITING") return;
+
+      if (partida.player1Id === usuario.id) {
+        return;
+      }
 
       partida.player2Id = usuario.id;
       partida.status = "PLAYING";
@@ -156,7 +160,7 @@ export const socketController = async (socket, io) => {
           ganadorRonda,
         });
 
-        // Ganador al mejor de 3
+        // Ganador al mejor de 
         if (partida.p1Score >= 3 || partida.p2Score >= 3) {
           partida.status = "FINISHED";
           partida.winnerId =
@@ -175,7 +179,6 @@ export const socketController = async (socket, io) => {
           });
           actualizarRanking();
         } else {
-          // Resetear ronda
           partida.p1Move = null;
           partida.p2Move = null;
           await partida.save();
@@ -195,8 +198,8 @@ export const socketController = async (socket, io) => {
       if (partida.status === "WAITING") {
         await partida.destroy();
         console.log(`Partida #${gameId} en WAITING eliminada por abandono.`);
+        socket.emit("fin-partida", { ganadorId: null });
       } else if (partida.status === "PLAYING") {
-
         partida.status = "FINISHED";
 
         let winnerId = null;
@@ -219,10 +222,8 @@ export const socketController = async (socket, io) => {
           ganadorId: winnerId || "CPU",
         });
         actualizarRanking();
-      } else {
-        return;
       }
-
+      
       actualizarListaPartidas();
     } catch (error) {
       console.error("Error al gestionar abandono:", error);

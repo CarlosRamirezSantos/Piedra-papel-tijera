@@ -11,7 +11,7 @@
     <div id="auth-screen">
         <div class="card">
             <h1>Bienvenido Jugador</h1>
-            <input type="text" id="username" placeholder="Usuario" />
+            <input type="text" id="username" placeholder="Usuario" autocomplete="off" />
             <input type="password" id="password" placeholder="Contraseña" />
             
             <div class="buttons-row">
@@ -19,7 +19,7 @@
                 <button id="btnRegister" class="btn-secondary">Registrarse</button>
             </div>
             
-            <p id="message" class="msg" style="margin-top: 10px; font-weight: bold; min-height: 20px;"></p>
+            <p id="message" class="msg"></p>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
                     <span>Win Rate</span>
                 </div>
                 <ul id="rankingList" class="list-group">
-                    <li>Cargando ranking...</li>
+                    <li style="text-align:center; padding:20px;">Cargando ranking...</li>
                 </ul>
             </div>
         </div>
@@ -57,6 +57,7 @@
     <div id="game-screen" class="hidden">
         <div class="game-header">
             <h2 id="gameStatus">Esperando oponente...</h2>
+            
             <div class="score-board">
                 <div class="player-score">
                     <span id="p1Name">Tú</span>
@@ -76,15 +77,16 @@
             </div>
 
             <div class="moves-container" id="movesControls">
-                <button class="move-btn" data-move="rock">🪨 Piedra</button>
-                <button class="move-btn" data-move="paper">📄 Papel</button>
-                <button class="move-btn" data-move="scissors">✂️ Tijera</button>
+                <button class="move-btn" data-move="piedra">🪨</button>
+                <button class="move-btn" data-move="papel">📄</button>
+                <button class="move-btn" data-move="tijera">✂️</button>
             </div>
         </div>
 
         <button id="btnAbandon" class="btn-danger">Abandonar Partida</button>
     </div>
 
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>
