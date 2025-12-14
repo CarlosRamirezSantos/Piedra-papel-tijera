@@ -3,24 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Chat</title>
-    
+    <title>Piedra, Papel, Tijera - Online</title>
     <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
 
-    <div id="auth-container">
-        <h1>Bienvenido</h1>
-        
-        <input type="text" id="username" placeholder="Usuario" />
-        <input type="password" id="password" placeholder="Contraseña" />
+    <div id="auth-screen">
+        <div class="card">
+            <h1>Bienvenido Jugador</h1>
+            <input type="text" id="username" placeholder="Usuario" />
+            <input type="password" id="password" placeholder="Contraseña" />
+            
+            <div class="buttons-row">
+                <button id="btnLogin" class="btn-primary">Iniciar Sesión</button>
+                <button id="btnRegister" class="btn-secondary">Registrarse</button>
+            </div>
+            
+            <p id="message" class="msg" style="margin-top: 10px; font-weight: bold; min-height: 20px;"></p>
+        </div>
+    </div>
 
-        <div class="buttons">
-            <button id="btnLogin">Iniciar Sesión</button>
-            <button id="btnRegister">Registrarse</button>
+    <div id="lobby-screen" class="hidden">
+        <header>
+            <h2>Hola, <span id="userDisplay"></span></h2>
+            <button id="btnLogout" class="btn-danger small">Salir</button>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="panel actions-panel">
+                <h3>Jugar</h3>
+                <button id="btnPlayCpu" class="btn-primary full-width">⚔️ Jugar vs CPU</button>
+                <button id="btnCreateGame" class="btn-secondary full-width">👤 Crear Sala (vs Humano)</button>
+                
+                <h3>Partidas Disponibles</h3>
+                <ul id="gamesList" class="list-group">
+                    <li class="empty-msg">No hay partidas en espera...</li>
+                </ul>
+            </div>
+
+            <div class="panel ranking-panel">
+                <h3>🏆 Top Jugadores</h3>
+                <div class="ranking-header">
+                    <span>Jugador</span>
+                    <span>Win Rate</span>
+                </div>
+                <ul id="rankingList" class="list-group">
+                    <li>Cargando ranking...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="game-header">
+            <h2 id="gameStatus">Esperando oponente...</h2>
+            <div class="score-board">
+                <div class="player-score">
+                    <span id="p1Name">Tú</span>
+                    <span id="p1Score" class="big-number">0</span>
+                </div>
+                <div class="vs">VS</div>
+                <div class="player-score">
+                    <span id="p2Name">Oponente</span>
+                    <span id="p2Score" class="big-number">0</span>
+                </div>
+            </div>
         </div>
 
-        <p id="message"></p>
+        <div class="game-area">
+            <div class="info-display">
+                <p id="roundMessage">Elige tu jugada para la siguiente ronda</p>
+            </div>
+
+            <div class="moves-container" id="movesControls">
+                <button class="move-btn" data-move="rock">🪨 Piedra</button>
+                <button class="move-btn" data-move="paper">📄 Papel</button>
+                <button class="move-btn" data-move="scissors">✂️ Tijera</button>
+            </div>
+        </div>
+
+        <button id="btnAbandon" class="btn-danger">Abandonar Partida</button>
     </div>
 
     <script type="module" src="/src/main.js"></script>
